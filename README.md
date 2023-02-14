@@ -10,6 +10,10 @@ This project was tested with dart 2.19.2 on Intel MacOS.
 
 Red/Green/Yellow colors will show best on a console with black background.
 
+## Install Dependencies
+
+Type 'dart pub get' to install dependencies.
+
 ## Run
 
 Type 'dart run lib/cli_wordle.dart' to run a development version.
