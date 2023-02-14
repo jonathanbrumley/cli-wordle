@@ -22,17 +22,17 @@ This is a pro and a con.
 
 ## Wordle Design
 
-History could be more flexible if it recorded the full game result for each
+1. History could be more flexible if it recorded the full game result for each
 game (Date, word, numberOfGuesses). I was originally trying to avoid saving
 one entry per game, and instead just saved accumulators. But I ended up saving 
 one entry per game for the keywords anyway in order to prevent playing twice.
 
 ## Testing
 
-I ran into trouble when trying to separate tests into multiple files.  Even when 
+1. I ran into trouble when trying to separate tests into multiple files. Even when 
 I imported the subtest file as an extra step, I ran into a weird compile error. 
 That's why the test file is so long. This is definitely something to figure out.
 
-I designed the StreamWordle class to support testing (it writes to an IOSink instead
-of directly to Stdout).  But didn't get around to implementing these tests.  But it was
-still worth the extra work to better understand the Dart IO library.
+2. I designed the StreamWordle class to support testing (it writes to an IOSink instead 
+of directly to Stdout).  But I didn't get around to implementing these tests. Still 
+it was worth the extra work to better understand the Dart IO package.
