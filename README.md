@@ -16,11 +16,11 @@ Type 'dart test' to run all tests.
 
 ## Run
 
-Type 'dart run' to run a development version.
+Type 'dart run lib/cli_wordle.dart' to run a development version.
 
 ## Build
 
-Type 'dart compile exe bin/wordle.dart -o wordle' to build a self-contained console exe.
+Type 'dart compile exe lib/cli_wordle.dart -o wordle' to build a self-contained console exe.
 Then type './wordle' to run.
 
 ## Usage
