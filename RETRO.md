@@ -11,7 +11,7 @@ The support for async/await seems more native.
 understand why the designers did this because Dart allows functions as top-level
 types.  However, this makes it confusing how to name and structure files. 
 With one class per file, it's weird that the file name is different from the 
-class name. So I ended upputting multiple classes in a file in a few cases, 
+class name. So I ended up putting multiple classes in a file in a few cases, 
 and I wasn't entirely happy with that either.  Standards and conventions are 
 great, and Dart seems to lack a standard in this case. In Typescript, I prefer
 to name the file after the class and use the same casing.
@@ -22,7 +22,10 @@ calls instead of method calls.
 
 4. Some conveniences are missing compared with Python or Kotlin. I missed Python's
 ability to enumerate with parallel index and value. Maybe Dart will add this with
-support for tuple/record types.
+support for tuple/record types.  The new version of Dart is supposed to have
+more class modifiers (like interfaces).  In this project I labeled interfaces
+as abstract classes, which prevents a class implementing multiple.  I love 
+that the language is under active development and being improved.
 
 5. Google has proven they are willing to break compatibility with new versions.
 This is a pro and a con.
@@ -56,6 +59,12 @@ it was worth the extra work to better understand the Dart IO package.
 5. Currently cli_wordle files import wordle files with a backwards relative path,
 which is ugly I think the solution is to create a standalone package.yaml file for the 
 wordle files. This is definitely something to figure out.
+
+6. I put a couple of default implementations in the same file as the interface. This is
+not great practice because the point of the interface is the client doesn't need to depend
+on a specific implementation.  My excuse is I got stuck on the Dart file naming convention,
+and not wanting to name files as lower_case_versions_of_the_class_name.dart.  Probably
+that is the way to go.
 
 ### Take-Home Interviews
 
