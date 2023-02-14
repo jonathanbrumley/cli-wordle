@@ -1,5 +1,5 @@
 import "dart:math";
-import 'wordle.dart';
+import '../../wordle.dart';
 
 void printHistory(History history, int maxGuesses, void Function(String s) print) {
   final played = history.played;

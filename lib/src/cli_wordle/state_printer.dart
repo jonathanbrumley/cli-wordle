@@ -1,4 +1,4 @@
-import 'wordle.dart';
+import '../../wordle.dart';
 
 void printState(WordleState state, void Function(String s) print) {
   _printGuesses(state, print);

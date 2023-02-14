@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
-import 'wordle.dart';
+import '../../wordle.dart';
 import 'state_printer.dart';
 import 'history_printer.dart';
 
