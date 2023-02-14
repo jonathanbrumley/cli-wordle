@@ -44,4 +44,5 @@ Future<void> _printTimeToNextWordle(KeyWordStore keyWordStore) async {
   final minutesPad = minutes.toString().padLeft(2, '0');
   final secondsPad = seconds.toString().padLeft(2, '0');
   print('Next Wordle in $hoursPad:$minutesPad:$secondsPad ...');
+  print('');
 }

@@ -143,7 +143,7 @@ void testHistory() {
     test('New', () {
       var history = History();
       history = saveLoad(history);
-      expect(history.lastWordDateTime, equals(DateTime.utc(2023, 1, 1)));
+      expect(history.wordsPlayed, equals([]));
       expect(history.wins, equals(0));
       expect(history.played, equals(0));
       expect(history.currentStreak, equals(0));
@@ -155,10 +155,9 @@ void testHistory() {
     test('Record one win', () {
       var history = History();
       history = saveLoad(history);
-      final dt = DateTime.now();
-      history.recordGame(dt, true, 3);
+      history.recordGame(createWin('SUPER', 3));
       history = saveLoad(history);
-      expect(history.lastWordDateTime, equals(dt));
+      expect(history.wordsPlayed, equals(['SUPER']));
       expect(history.wins, equals(1));
       expect(history.played, equals(1));
       expect(history.currentStreak, equals(1));
@@ -169,10 +168,9 @@ void testHistory() {
     test('Record one fail', () {
       var history = History();
       history = saveLoad(history);
-      final dt = DateTime.now();
-      history.recordGame(dt, false, 6);
+      history.recordGame(createLoss('MOUSE'));
       history = saveLoad(history);
-      expect(history.lastWordDateTime, equals(dt));
+      expect(history.wordsPlayed, equals(['MOUSE']));
       expect(history.wins, equals(0));
       expect(history.played, equals(1));
       expect(history.currentStreak, equals(0));
@@ -184,15 +182,15 @@ void testHistory() {
     test('Record one fail, then win streak', () {
       var history = History();
       history = saveLoad(history);
-      history.recordGame(DateTime.utc(2023,3,1), false, 6);
+      history.recordGame(createLoss('MOUSE'));
       history = saveLoad(history);
-      history.recordGame(DateTime.utc(2023,3,2), true, 3);
+      history.recordGame(createWin('SUPER', 3));
       history = saveLoad(history);
-      history.recordGame(DateTime.utc(2023,3,3), true, 4);
+      history.recordGame(createWin('AMEND', 4));
       history = saveLoad(history);
-      history.recordGame(DateTime.utc(2023,3,4), true, 3);
+      history.recordGame(createWin('BALMY', 3));
       history = saveLoad(history);
-      expect(history.lastWordDateTime, equals(DateTime.utc(2023,3,4)));
+      expect(history.wordsPlayed, equals(['MOUSE','SUPER','AMEND','BALMY']));
       expect(history.wins, equals(3));
       expect(history.played, equals(4));
       expect(history.currentStreak, equals(3));
@@ -204,17 +202,17 @@ void testHistory() {
     test('Record win streak, then fail, then win', () {
       var history = History();
       history = saveLoad(history);
-      history.recordGame(DateTime.utc(2023,3,1), true, 3);
+      history.recordGame(createWin('SUPER', 3));
       history = saveLoad(history);
-      history.recordGame(DateTime.utc(2023,3,2), true, 4);
+      history.recordGame(createWin('AMEND', 4));
       history = saveLoad(history);
-      history.recordGame(DateTime.utc(2023,3,3), true, 3);
+      history.recordGame(createWin('BALMY', 3));
       history = saveLoad(history);
-      history.recordGame(DateTime.utc(2023,3,4), false, 6);
+      history.recordGame(createLoss('MOUSE'));
       history = saveLoad(history);
-      history.recordGame(DateTime.utc(2023,3,5), true, 4);
+      history.recordGame(createWin('HURON', 4)); 
       history = saveLoad(history);
-      expect(history.lastWordDateTime, equals(DateTime.utc(2023,3,5)));
+      expect(history.wordsPlayed, equals(['SUPER','AMEND','BALMY','MOUSE','HURON']));
       expect(history.wins, equals(4));
       expect(history.played, equals(5));
       expect(history.currentStreak, equals(1));
@@ -232,7 +230,7 @@ Future<void> testHistoryStore() async {
       final path = createTempPath('wordle-history');
       final store = JsonFileHistoryStore(path);
       final history = await store.loadHistory();
-      expect(history.lastWordDateTime, equals(DateTime.utc(2023, 1, 1)));
+      expect(history.wordsPlayed, equals([]));
       expect(history.wins, equals(0));
       expect(history.played, equals(0));
       expect(history.currentStreak, equals(0));
@@ -246,15 +244,15 @@ Future<void> testHistoryStore() async {
       final path = createTempPath('wordle-history');
       final store = JsonFileHistoryStore(path);
       var history = await store.loadHistory();
-      history.recordGame(DateTime.utc(2023,3,1), true, 3);
-      history.recordGame(DateTime.utc(2023,3,2), true, 4);
-      history.recordGame(DateTime.utc(2023,3,3), true, 3);
-      history.recordGame(DateTime.utc(2023,3,4), false, 6);
-      history.recordGame(DateTime.utc(2023,3,5), true, 4);
+      history.recordGame(createWin('SUPER', 3));
+      history.recordGame(createWin('AMEND', 4));
+      history.recordGame(createWin('BALMY', 3));
+      history.recordGame(createLoss('MOUSE'));
+      history.recordGame(createWin('HURON', 4));
       final saveSuccess = await store.trySaveHistory(history);
       expect(saveSuccess, equals(true));
       history = await store.loadHistory();
-      expect(history.lastWordDateTime, equals(DateTime.utc(2023,3,5)));
+      expect(history.wordsPlayed, equals(['SUPER','AMEND','BALMY','MOUSE','HURON']));
       expect(history.wins, equals(4));
       expect(history.played, equals(5));
       expect(history.currentStreak, equals(1));
@@ -328,4 +326,22 @@ String createTempPath(String prefix) {
   final tempDirectoryPath = Directory.systemTemp.path;
   final id = Uuid().v4();
   return Path.join(tempDirectoryPath, '$prefix-$id');
+}
+
+const badGuesses = ['AAAAA', 'BBBBB', 'CCCCC', 'DDDDD', 'EEEEE', 'FFFFF'];
+WordleState createWin(String keyWord, int numGuesses) {
+  final state = WordleState(keyWord, 6);
+  for (var i = 0; i < (numGuesses - 1); ++i) {
+    state.addGuess(badGuesses[i]);
+  }
+  state.addGuess(keyWord);
+  return state;
+}
+
+WordleState createLoss(String keyWord) {
+  final state = WordleState(keyWord, 6);
+  for (var guess in badGuesses) {
+    state.addGuess(guess);
+  }
+  return state;
 }

@@ -161,14 +161,14 @@ An invalid word (not a recognized five character English word) does not consume 
 	Please guess any five letter English word:
 
 
-### 6. On Attempting to Play too Soon
+### 6. On Attempting to Play the Same Word or Before the Next Word is Available
 
-The game records the date/time of the last word played and you cannot play until the next word is available.
+The game records the words played and you cannot play until the next word is available.
 
 	> wordle
-	Next Wordle in: 02:13:45 >
-	Next Wordle in 11:16:42 ...
-	Use 'wordle random' for a random practice word.
+	Wordle for 2023-02-15
+
+	You have already played this Wordle.
 
 	Played: 1
 	Win%: 0
@@ -181,6 +181,8 @@ The game records the date/time of the last word played and you cannot play until
 		4:	0
 		5:	0
 		6:	0
+
+	Next Wordle in 19:40:57 ...
 
 
 ### 7. Administration: Key Word Generation

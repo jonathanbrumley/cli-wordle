@@ -53,18 +53,13 @@ Words should be reviewed and filtered to eliminate proper names and bad words.
 
 History will be stored in a local user file.  The format can be JSON because
 it's a simple way to store nested objects and lists with properties.  Also,
-I want to practice using JSON in Dart.
-
-The 5-letter Dictionary can just be stored concisely as line-delimited words for
-inhale.
-
-The key word set is just date times and obfuscated strings, so CSV is a concise 
-format for inhale.
+I want to practice using JSON in a type-safe, null-safe language like Dart.
 
 ## JSON Serialization
 
 The history store, and tests will use Json serialization for game state and history.
-Dart has libraries to generate Json serialization but in this simple case 
+Dart has libraries to generate Json serialization but I will write this myself
+to understand how JSON works in Dart. 
 
 ## Code Structure
 
@@ -111,10 +106,10 @@ The lib organization will support future form factors other than CLI.
 In some systems components can communicate localized error strings to higher 
 levels in the code through exception handling and/or side return values. The 
 error strings will often contain guidance on how to fix the problem.  This 
-system will use try methods and exception handling for unexpected file not 
-found.  To keep this app simple, the StreamIO implementation will respond to 
+system will use try methods and exception handling for unexpected file errors.
+To keep this app simple, the StreamIO implementation will respond to 
 exceptions with hardcoded output or default behavior (for instance, don't update
-history if history is not found).
+history if history file cannot be written).
 
 ## No Logging or User Tracking ##
 

@@ -20,31 +20,47 @@ class StreamWordle {
     Future<void> run() async {
         final lines = stdin.transform(utf8.decoder).transform(const LineSplitter());
         print('');
-        printState(state, print);
-        print('');
-        _printPrompt();
-        await for (var line in lines) {
-
+        final history = await historyStore.loadHistory();
+        if (!_tryFindWordInHistory(history)) {
+            printState(state, print);
             print('');
-            var word = await dictionary.tryValidateAndNormalizeWord(line);
-            if (word == null) {
-                print('No five letter English word matches "$line".');
-            } else {
-                state.addGuess(word);
-                printState(state, print);
-                print('');
-            }
-            if (state.isSolved || state.remainingGuesses == 0) {
-                break;
-            }
             _printPrompt();
+            await for (var line in lines) {
+                if (await _tryCompleteWithGuess(line)) {
+                    break;
+                }
+                _printPrompt();
+            }
+            await _tryUpdateHistory(history);
         }
-        await tryUpdateHistory();
     }
 
-    Future<void> tryUpdateHistory() async {
-        final history = await historyStore.loadHistory();
-        history.recordGame(DateTime.now(), state.isSolved, state.guesses.length);
+    bool _tryFindWordInHistory(History history) {
+        bool found = history.wordsPlayed.contains(state.key);
+        if (found) {
+            print('You have already played this Wordle.');
+            print('');
+            printHistory(history, state.maxGuesses, print);
+            print('');
+        }
+        return found;
+    }
+
+    Future<bool> _tryCompleteWithGuess(String guess) async {
+        print('');
+        var word = await dictionary.tryValidateAndNormalizeWord(guess);
+        if (word == null) {
+            print('No five letter English word matches "$guess".');
+        } else {
+            state.addGuess(word);
+            printState(state, print);
+            print('');
+        }
+        return (state.isSolved || state.remainingGuesses == 0);
+    }
+
+    Future<void> _tryUpdateHistory(History history) async {
+        history.recordGame(state);
         bool isSaved = await historyStore.trySaveHistory(history);
         if (isSaved) {
             printHistory(history, state.maxGuesses, print);
